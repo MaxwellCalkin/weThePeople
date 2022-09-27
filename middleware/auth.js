@@ -4,6 +4,7 @@ module.exports = {
       return next();
     } else {
       res.redirect("/");
+      alert('Please Login')
     }
   },
   ensureGuest: function (req, res, next) {
