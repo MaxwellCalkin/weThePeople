@@ -12,3 +12,8 @@
     font-family: 'Cormorant Unicase', serif;
     font-family: 'Splash', cursive;
 }
+
+.bill {
+    line-height: 1rem;
+    height: 4rem
+}
