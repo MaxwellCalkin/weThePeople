@@ -5,6 +5,10 @@ const VoteSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  bill_id: {
+    type: String,
+    require: true,
+  },
   image: {
     type: String,
     require: true,

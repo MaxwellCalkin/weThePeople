@@ -10,7 +10,7 @@ router.get("/", ensureAuth, votesController.getVotes);
 
 router.get("/search", votesController.getSearch);
 
-router.put("/likePost/:id", postsController.likePost);
+router.get("/details/:bill_slug/:congress", ensureAuth, votesController.getDetails);
 
 router.delete("/deletePost/:id", postsController.deletePost);
 

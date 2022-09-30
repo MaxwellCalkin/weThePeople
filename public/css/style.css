@@ -17,3 +17,9 @@
     line-height: 1rem;
     height: 4rem
 }
+
+.pic-fit {
+    width: 100%;
+    height: 25vw;
+    object-fit: cover;
+}

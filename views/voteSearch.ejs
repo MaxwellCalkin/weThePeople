@@ -2,11 +2,12 @@
     <div class="container">
 
         <div class="row mt-3">
-             <% for(var i=0; i<18; i++) {%>
+             <% for(var i=0; i<billsArray.length && i < 18; i++) {%>
                 <div class="container col-sm-12 col-md-6 col-lg-4">
                     <div class="card p-0">
                         <div class="card-body">
-                            <h5 class="card-title"><%= billsArray[i].short_title%></h5>
+                            <h5 class="card-title"><%= billsArray[i].short_title ? billsArray[i].short_title : billsArray[i].title%></h5>
+                            <a href="/vote/details/<%= billsArray[i].bill_id.slice(0,billsArray[i].bill_id.indexOf('-'))%>/<%= billsArray[i].bill_id.slice(billsArray[i].bill_id.indexOf('-') + 1)%>">View Details and Vote</a>
                         </div>
                     </div>
                 </div>

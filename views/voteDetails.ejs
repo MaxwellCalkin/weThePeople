@@ -1,0 +1,28 @@
+<%- include('partials/headerBoot') -%>
+    <div class="container">
+
+        <div class="row mt-3">
+            <div class="container col-12">
+                <div class="card p-0">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-8">
+                                <h3 class="card-title col"><%= bill.short_title ? bill.short_title : bill.title%></h3>
+                            <a href="https://www.govtrack.us/congress/bills/<%= bill.congress%>/<%= bill.bill_slug%>/text" class="col">View Full Text Of This Bill on GovTrack.us</a>
+                            <div class="col">
+                                Total WTP Votes: <%= votes %>
+                            </div>
+                            </div>
+                            <%if(bill.image) {%>
+                                <img src="<%=bill.image%>" alt="vote pic" class="col-4">
+                            <% }else{ %>
+                                <img src="/imgs/wtp.png" alt="default bill image" class="col-4">
+                            <% } %>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+<%- include('partials/footer') -%>
