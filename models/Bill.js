@@ -1,11 +1,15 @@
 const mongoose = require("mongoose");
 
-const VoteSchema = new mongoose.Schema({
+const BillSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
   },
-  bill_id: {
+  billSlug: {
+    type: String,
+    require: true,
+  },
+  congress: {
     type: String,
     require: true,
   },
@@ -34,9 +38,9 @@ const VoteSchema = new mongoose.Schema({
     required: true,
   },
   createdAt: {
-    type: String,
-    required: true,
+    type: Date,
+    default: Date.now,
   },
 });
 
-module.exports = mongoose.model("Vote", VoteSchema);
+module.exports = mongoose.model("Bill", BillSchema);

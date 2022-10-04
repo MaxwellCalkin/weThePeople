@@ -14,4 +14,7 @@ module.exports = {
       res.redirect("/dashboard");
     }
   },
+  // ensureCD: async function (req, res, next) {
+  //   const resp = await fetch(`https://civicinfo.googleapis.com/civicinfo/v2/representatives?address=${req.body.address}&levels=country&roles=legislatorLowerBody&key=${process.env.GOOGLE_KEY}`
+  // }
 };

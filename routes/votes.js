@@ -12,6 +12,6 @@ router.get("/search", votesController.getSearch);
 
 router.get("/details/:bill_slug/:congress", ensureAuth, votesController.getDetails);
 
-router.delete("/deletePost/:id", postsController.deletePost);
+router.post("/vote/:bill_slug/:congress", votesController.yayOrNay);
 
 module.exports = router;

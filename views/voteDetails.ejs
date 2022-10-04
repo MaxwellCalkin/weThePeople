@@ -8,10 +8,26 @@
                         <div class="row">
                             <div class="col-8">
                                 <h3 class="card-title col"><%= bill.short_title ? bill.short_title : bill.title%></h3>
-                            <a href="https://www.govtrack.us/congress/bills/<%= bill.congress%>/<%= bill.bill_slug%>/text" class="col">View Full Text Of This Bill on GovTrack.us</a>
-                            <div class="col">
-                                Total WTP Votes: <%= votes %>
-                            </div>
+                                <a href="https://www.govtrack.us/congress/bills/<%= bill.congress%>/<%= bill.bill_slug%>/text" class="col">View Full Text Of This Bill on govtrack.us</a>
+                                <div class="col">
+                                    Total WTP Votes: <%= votes %>
+                                </div>
+                                <form action="/vote/<%= bill.bill_slug%>/<%= bill.congress%>" method="POST">
+                                    <input type="hidden" name="title" value="<%= bill.title%>" >
+                                    <input type="hidden" name="bill_slug" value="<%= bill.bill_slug%>" >
+                                    <input type="hidden" name="congress" value="<%= bill.congress%>" >
+                                    <input type="hidden" name="summary" value="<%= bill.summary%>" >
+                                    <input type="hidden" name="nay" value="1" >
+                                    <button type="submit" class="btn btn-primary">Yay</button>
+                                </form>
+                                <form action="/vote/<%= bill.bill_slug%>/<%= bill.congress%>" method="POST">
+                                    <input type="hidden" name="title" value="<%= bill.title%>" >
+                                    <input type="hidden" name="bill_slug" value="<%= bill.bill_slug%>" >
+                                    <input type="hidden" name="congress" value="<%= bill.congress%>" >
+                                    <input type="hidden" name="summary" value="<%= bill.summary%>" >
+                                    <input type="hidden" name="nay" value="1" >
+                                    <button type="submit" class="btn btn-primary">Nay</button>
+                                </form>
                             </div>
                             <%if(bill.image) {%>
                                 <img src="<%=bill.image%>" alt="vote pic" class="col-4">
@@ -19,7 +35,6 @@
                                 <img src="/imgs/wtp.png" alt="default bill image" class="col-4">
                             <% } %>
                         </div>
-                        
                     </div>
                 </div>
             </div>
