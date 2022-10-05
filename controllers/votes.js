@@ -44,17 +44,19 @@ module.exports = {
 
       const data = await resp.json()
 
+      console.log(data)
+
       const bill = data.results[0]
 
-      const billExists = await Bill.exists({ bill_id: data.results[0].bill_id})
+      const billExists = await Bill.exists({ billSlug: data.results[0].bill_id})
 
-      const votes = 0
+      let votes = 0
 
-      await Bill.findOne({ bill_id: data.results[0].bill_slug}, function(err,bill){
+      await Bill.findOne({ billSlug: data.results[0].bill_slug}, function(err,bill){
         if(err){
           console.log(err)
         }else if(bill){
-          votes = bill.yays + bill.nays
+          votes = bill.yeas + bill.nays
         }
       })
 
@@ -78,9 +80,12 @@ module.exports = {
     // Here We Go!
     console.log('XHGDSHJAGDHSIKJANHUISJKNHXUIJKSHXSUIAJKXHSUIXKJSAHMXJKSAHXMSUKAJXHMSUNK')
     console.log(req.body)
+    console.log(await Bill.exists({ billSlug: req.body.billSlug }))
     try {
+
+      const billExists = await Bill.exists({ billSlug: req.body.billSlug })
       // If the bill doesn't exist, create the bill
-      if(!Bill.exists({ billSlug: req.body.bill_slug })){
+      if(!billExists){
         await Bill.create({
           title: req.body.title,
           billSlug: req.body.billSlug,
@@ -93,18 +98,16 @@ module.exports = {
         })
       // Else, update either the yay or nay number
       }else{
-        if(req.body.yea){
           await Bill.findOneAndUpdate(
-            { billSlug: req.body.bill_slug },
+            { billSlug: req.body.billSlug },
             {
               $inc: { yeas: 1 },
             }
           )
-        }
       }
       // Set the user's yayBillIds or nayBillIds array to include an object with {bill_slug: {yay: true, nay: false}}
       // await User.findOneAndUpdate()
-      res.redirect(`vote/details/${req.body.bill_slug}/${req.body.congress}`)
+      res.redirect(`details/${req.body.billSlug}/${req.body.congress}`)
     } catch (err) {
       console.log(err);
     }
@@ -113,6 +116,7 @@ module.exports = {
     // Here We Go!
     console.log('XHGDSHJAGDHSIKJANHUISJKNHXUIJKSHXSUIAJKXHSUIXKJSAHMXJKSAHXMSUKAJXHMSUNK')
     console.log(req.body)
+    console.log(await Bill.exists({ billSlug: req.body.bill_slug }))
     try {
       // If the bill doesn't exist, create the bill
       if(!Bill.exists({ billSlug: req.body.bill_slug })){
@@ -126,20 +130,22 @@ module.exports = {
           nays: 1,
           yays: 0,
         })
+        console.log('bill created')
       // Else, update either the yay or nay number
       }else{
         if(req.body.yay){
           await Bill.findOneAndUpdate(
-            { billSlug: req.body.bill_slug },
+            { billSlug: req.body.billSlug },
             {
               $inc: { nays: 1 },
             }
           )
         }
+        console.log('bill updated')
       }
       // Set the user's yayBillIds or nayBillIds array to include an object with {bill_slug: {yay: true, nay: false}}
       // await User.findOneAndUpdate()
-      res.redirect(`vote/details/${req.body.bill_slug}/${req.body.congress}`)
+      await res.redirect(`vote/details/${req.body.billSlug}/${req.body.congress}`)
     } catch (err) {
       console.log(err);
     }
