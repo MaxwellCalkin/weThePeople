@@ -52,10 +52,10 @@ I'm learning so much about the American political system. I've gone much more in
         </a>
     </td>
     <td width="33.3%" valign="top">
-<a target="_blank" href="https://github.com/MaxwellCalkin/star-trek-full-stack">Star Trek Full Stack</a>
+<a target="_blank" href="https://mlblineupsimulator.netlify.app/">MLB Lineup Simulator</a>
         <br />
-        <a target="_blank" href="https://github.com/MaxwellCalkin/star-trek-full-stack">
-          <img src="https://thumbs.gfycat.com/EachPositiveAmericancurl-size_restricted.gif" width="100%" alt="Star Trek App"/>
+        <a target="_blank" href="https://mlblineupsimulator.netlify.app/">
+          <img src="https://github.com/MaxwellCalkin/MaxwellCalkin/blob/main/images/sox.gif" width="100%" alt="MLB Lineup Simulator"/>
         </a>
     </td>
   </tr>
