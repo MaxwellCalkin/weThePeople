@@ -10,7 +10,7 @@
 
 
 
-I'm excited that I get to use the ProPublica API to fetch real data on congress members and bills as well as the Google Civic API to determine a user's congressional district 
+I'm excited that I get to use the ProPublica API to fetch real data on congress members and bills as well as the Google Civic API to determine a user's congressional district.
 
 ## Demo Login
 
@@ -23,7 +23,7 @@ Demo password: maxmaxmax
 
 Current Projects: Reworking the "Yea or Nay" system on each bill. Right now you can search for any bill and vote on it, and I'm adding the functionality to display WTP votes on this bill, WTP votes in your congressional district on this bill, and how your senator or representative voted. This is a core function of the mission of WTP. The hope being, when people see that their representative is never representing them, they will be more incentivized to vote.
 
-Projects On Deck: This week I will be adding the ability to make a typical social media post that is linked to a bill. The most-liked post for each bill will appear with the bill.
+Projects On Deck: This week I will be adding the ability to make a typical social media post that is linked to a bill. The most-liked post for each bill will appear with the bill. I am also about to start updating the user's profile page to include info about their congressional district and voting opportunities.
 
 ## Lessons Learned:
 
