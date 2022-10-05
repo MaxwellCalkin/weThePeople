@@ -6,8 +6,9 @@
 
 ### What do we want?!  Integrity in politics! How do we get it?!  We The People!
 
-## Tech used: ![HTML5 BADGE](https://img.shields.io/static/v1?label=|&message=HTML5&color=23555f&style=plastic&logo=html5)![CSS BADGE](https://img.shields.io/static/v1?label=|&message=CSS3&color=285f65&style=plastic&logo=css3)![BOOTSTRAP BADGE](https://img.shields.io/static/v1?label=|&message=BOOTSTRAP&color=316c5e&style=plastic&logo=bootstrap)![JAVASCRIPT BADGE](https://img.shields.io/static/v1?label=|&message=JAVASCRIPT&color=3c7f5d&style=plastic&logo=javascript)![EXPRESS BADGE](https://img.shields.io/static/v1?label=|&message=EXPRESS&color=bbb111&style=plastic&logo=express)![MONGODB BADGE](https://img.shields.io/static/v1?label=|&message=MONGO-DB&color=cdd148&style=plastic&logo=mongodb)
+Use the Demo Login below to access the site. From there you can search for the bills you're most passionate about, and cast your vote!
 
+## Tech used: ![HTML5 BADGE](https://img.shields.io/static/v1?label=|&message=HTML5&color=23555f&style=plastic&logo=html5)![CSS BADGE](https://img.shields.io/static/v1?label=|&message=CSS3&color=285f65&style=plastic&logo=css3)![BOOTSTRAP BADGE](https://img.shields.io/static/v1?label=|&message=BOOTSTRAP&color=316c5e&style=plastic&logo=bootstrap)![JAVASCRIPT BADGE](https://img.shields.io/static/v1?label=|&message=JAVASCRIPT&color=3c7f5d&style=plastic&logo=javascript)![EXPRESS BADGE](https://img.shields.io/static/v1?label=|&message=EXPRESS&color=bbb111&style=plastic&logo=express)![MONGODB BADGE](https://img.shields.io/static/v1?label=|&message=MONGO-DB&color=cdd148&style=plastic&logo=mongodb)
 
 
 I'm excited that I get to use the ProPublica API to fetch real data on congress members and bills as well as the Google Civic API to determine a user's congressional district.
@@ -21,7 +22,7 @@ Demo password: maxmaxmax
 
 ## Optimizations
 
-Current Projects: Reworking the "Yea or Nay" system on each bill. Right now you can search for any bill and vote on it, and I'm adding the functionality to display WTP votes on this bill, WTP votes in your congressional district on this bill, and how your senator or representative voted. This is a core function of the mission of WTP. The hope being, when people see that their representative is never representing them, they will be more incentivized to vote.
+Current Projects: Reworking the "Yea or Nay" system on each bill. Right now you can search for any bill and vote on it, and I'm adding the functionality to display WTP votes on this bill, WTP votes in your congressional district on this bill, and how your senator or representative voted. This is a core function of the mission of WTP.
 
 Projects On Deck: This week I will be adding the ability to make a typical social media post that is linked to a bill. The most-liked post for each bill will appear with the bill. I am also about to start updating the user's profile page to include info about their congressional district and voting opportunities.
 
