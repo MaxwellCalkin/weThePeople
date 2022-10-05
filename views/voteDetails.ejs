@@ -12,15 +12,15 @@
                                 <div class="col">
                                     Total WTP Votes: <%= votes %>
                                 </div>
-                                <form action="/vote/<%= bill.bill_slug%>/<%= bill.congress%>" method="POST">
+                                <form action="/vote/createYea" method="POST" class="d-inline">
                                     <input type="hidden" name="title" value="<%= bill.title%>" >
                                     <input type="hidden" name="bill_slug" value="<%= bill.bill_slug%>" >
                                     <input type="hidden" name="congress" value="<%= bill.congress%>" >
                                     <input type="hidden" name="summary" value="<%= bill.summary%>" >
-                                    <input type="hidden" name="nay" value="1" >
-                                    <button type="submit" class="btn btn-primary">Yay</button>
+                                    <input type="hidden" name="yea" value="1" >
+                                    <button type="submit" class="btn btn-primary">Yea</button>
                                 </form>
-                                <form action="/vote/<%= bill.bill_slug%>/<%= bill.congress%>" method="POST">
+                                <form action="/vote/createNay" method="POST" class="d-inline">
                                     <input type="hidden" name="title" value="<%= bill.title%>" >
                                     <input type="hidden" name="bill_slug" value="<%= bill.bill_slug%>" >
                                     <input type="hidden" name="congress" value="<%= bill.congress%>" >

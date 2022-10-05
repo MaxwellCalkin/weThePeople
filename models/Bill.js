@@ -29,7 +29,7 @@ const BillSchema = new mongoose.Schema({
       type: String,
       required: false
   },
-  yays: {
+  yeas: {
     type: Number,
     required: true,
   },

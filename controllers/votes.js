@@ -74,9 +74,10 @@ module.exports = {
       console.log(err);
     }
   },
-  yayOrNay: async (req, res) => {
+  createYea: async (req, res) => {
     // Here We Go!
     console.log('XHGDSHJAGDHSIKJANHUISJKNHXUIJKSHXSUIAJKXHSUIXKJSAHMXJKSAHXMSUKAJXHMSUNK')
+    console.log(req.body)
     try {
       // If the bill doesn't exist, create the bill
       if(!Bill.exists({ billSlug: req.body.bill_slug })){
@@ -87,8 +88,43 @@ module.exports = {
           image: '/imgs/wtp.png',
           cloudinaryId: '',
           givenSummary: req.body.summary,
-          nays: req.body.yay ? 1 : 0,
-          yays: req.body.nay ? 1 : 0,
+          nays: 0,
+          yeas: 1,
+        })
+      // Else, update either the yay or nay number
+      }else{
+        if(req.body.yea){
+          await Bill.findOneAndUpdate(
+            { billSlug: req.body.bill_slug },
+            {
+              $inc: { yeas: 1 },
+            }
+          )
+        }
+      }
+      // Set the user's yayBillIds or nayBillIds array to include an object with {bill_slug: {yay: true, nay: false}}
+      // await User.findOneAndUpdate()
+      res.redirect(`vote/details/${req.body.bill_slug}/${req.body.congress}`)
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  createNay: async (req, res) => {
+    // Here We Go!
+    console.log('XHGDSHJAGDHSIKJANHUISJKNHXUIJKSHXSUIAJKXHSUIXKJSAHMXJKSAHXMSUKAJXHMSUNK')
+    console.log(req.body)
+    try {
+      // If the bill doesn't exist, create the bill
+      if(!Bill.exists({ billSlug: req.body.bill_slug })){
+        await Bill.create({
+          title: req.body.title,
+          billSlug: req.body.billSlug,
+          congress: req.body.congress,
+          image: '/imgs/wtp.png',
+          cloudinaryId: '',
+          givenSummary: req.body.summary,
+          nays: 1,
+          yays: 0,
         })
       // Else, update either the yay or nay number
       }else{
@@ -96,18 +132,10 @@ module.exports = {
           await Bill.findOneAndUpdate(
             { billSlug: req.body.bill_slug },
             {
-              $inc: { yay: 1 },
-            }
-          )
-        }else{
-          await Bill.findOneAndUpdate(
-            { billSlug: req.body.bill_slug },
-            {
-              $inc: { nay: 1 },
+              $inc: { nays: 1 },
             }
           )
         }
-        
       }
       // Set the user's yayBillIds or nayBillIds array to include an object with {bill_slug: {yay: true, nay: false}}
       // await User.findOneAndUpdate()
