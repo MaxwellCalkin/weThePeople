@@ -7,8 +7,8 @@ const UserSchema = new mongoose.Schema({
   password: String,
   state: { type: String },
   cd: { type: String },
-  yayBillIds: {type: Array, required: false},
-  nayBillIds: {type: Array, required: false}
+  yeaBillSlugs: {type: Array, required: false},
+  nayBillSlugs: {type: Array, required: false}
 });
 
 // Password hash middleware.

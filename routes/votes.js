@@ -12,6 +12,8 @@ router.get("/search", votesController.getSearch);
 
 router.get("/details/:bill_slug/:congress", ensureAuth, votesController.getDetails);
 
+router.get("/detailsVoted/:bill_slug/:congress", ensureAuth, votesController.getDetailsVoted);
+
 router.post("/createYea", votesController.createYea);
 
 router.post("/createNay", votesController.createNay);
