@@ -99,7 +99,8 @@ module.exports = {
         }
       })
 
-      const response = await fetch(`https://api.propublica.org/congress/v1/members/${bill.bill_type === 'hr' ? 'house' : 'senate'}/${req.user.state.toUpperCase()}/current.json`, {
+      // Get representatives by state and district
+      const response = await fetch(`https://api.propublica.org/congress/v1/members/${bill.bill_type === 'hr' ? 'house' : 'senate'}/${req.user.state.toUpperCase()}/${bill.bill_type === 'hr' ? req.user.cd + '/' : ''}current.json`, {
         headers: {
           "X-API-KEY": `${process.env.CONGRESS_KEY}`,
         }
@@ -109,7 +110,74 @@ module.exports = {
 
       const repsArray = repData.results
 
-      res.render("voteDetailsVoted.ejs", { bill: bill, votes: votes, user: user, repsArray: repsArray })
+      console.log("THIS IS REPS ARRAY", repsArray)
+      
+
+      // Use repsArray to do a fetch to get their specific vote on this bill
+      async function findVotesIndex(repVotesData){
+        const voteIndex = await repVotesData.results[0].votes.forEach((vote, index) => {
+          if(vote.bill.bill_id === bill.bill_id){
+            return index
+          }
+        })
+        return voteIndex
+      }
+
+      const firstRepVotesResponse = await fetch(`https://api.propublica.org/congress/v1/members/${repsArray[0].id}/votes.json`, {
+        headers: {
+          "X-API-KEY": `${process.env.CONGRESS_KEY}`,
+        }
+      })
+
+      const firstRepVotesData = await firstRepVotesResponse.json()
+
+      // Set data equal to ONLY the data on the current bill
+      const firstRepVotesDataOnThisBill = firstRepVotesData.results[0].votes.filter(x => x.bill.bill_id === bill.bill_id)
+
+      const firstRepsVote = firstRepVotesDataOnThisBill.length > 0 ? firstRepVotesDataOnThisBill[0].position : 'Did Not Vote On This Bill'
+
+      console.log(firstRepsVote, 'This Is firstRepsVote')
+      
+      // If it's a senate vote, get the second senator's position
+      let secondRepsVote = undefined
+      console.log(repsArray[1], 'repsArray[1]')
+      if(repsArray.length > 1){
+        const secondRepVotesResponse = await fetch(`https://api.propublica.org/congress/v1/members/${repsArray[1].id}/votes.json`, {
+          headers: {
+            "X-API-KEY": `${process.env.CONGRESS_KEY}`,
+          }
+        })
+
+        const secondRepVotesData = await secondRepVotesResponse.json()
+
+        const secondRepVotesDataOnThisBill = secondRepVotesData.results[0].votes.filter(x => x.bill.bill_id === bill.bill_id)
+
+        const secondRepsVote = secondRepVotesDataOnThisBill.length > 0 ? secondRepVotesDataOnThisBill[0].position : 'Did Not Vote On This Bill'
+
+        console.log(secondRepsVote, ': This Is secondRepsVote')
+      }
+      
+
+
+      const yeasArray = await User.find( { yeaBillSlugs: bill.bill_slug })
+
+      const yeasByDistrictArray = await User.find( { yeaBillSlugs: bill.bill_slug, state: req.user.state, cd: req.user.cd })
+      
+      const yeas = yeasArray.length
+
+      const yeasByDistrict = yeasByDistrictArray.length
+      
+      console.log(yeas, 'this is yeas', yeas, "this is yeas")
+
+      const naysArray = await User.find( { nayBillSlugs: bill.bill_slug})
+
+      const naysByDistrictArray = await User.find( { nayBillSlugs: bill.bill_slug, state: req.user.state, cd: req.user.cd })
+
+      const nays = naysArray.length
+
+      const naysByDistrict = naysByDistrictArray.length
+
+      res.render("voteDetailsVoted.ejs", { bill: bill, votes: votes, user: user, repsArray: repsArray, yeas: yeas, nays: nays, yeasByDistrict: yeasByDistrict, naysByDistrict: naysByDistrict, firstRepsVote: firstRepsVote, secondRepsVote: secondRepsVote })
 
     } catch (err) {
       console.log(err);

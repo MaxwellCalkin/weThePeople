@@ -23,7 +23,8 @@ const BillSchema = new mongoose.Schema({
   },
   givenSummary: {
     type: String,
-    required: true,
+    required: false,
+    default: 'There is no ProPublica summary for this bill.'
   },
   userSummary:{
       type: String,

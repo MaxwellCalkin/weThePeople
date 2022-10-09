@@ -7,7 +7,8 @@
                     <div class="card p-0 mb-3">
                         <div class="card-body">
                             <h5 class="card-title"><%= billsArray[i].short_title ? billsArray[i].short_title : billsArray[i].title%></h5>
-                            <% if(user.yeaBillSlugs.includes(billsArray[i].bill_id.split('-')[0]) || if(user.nayBillSlugs.includes(billsArray[i].bill_id.split('-')[0])) {%>
+
+                            <% if(user.yeaBillSlugs.includes(billsArray[i].bill_id.split('-')[0]) || user.nayBillSlugs.includes(billsArray[i].bill_id.split('-')[0])) {%>
                                 <a href="/vote/detailsVoted/<%= billsArray[i].bill_id.slice(0,billsArray[i].bill_id.indexOf('-'))%>/<%= billsArray[i].bill_id.slice(billsArray[i].bill_id.indexOf('-') + 1)%>">You Voted! View Details</a>
                             <% }else{ %>    
                                 <a href="/vote/details/<%= billsArray[i].bill_id.slice(0,billsArray[i].bill_id.indexOf('-'))%>/<%= billsArray[i].bill_id.slice(billsArray[i].bill_id.indexOf('-') + 1)%>">View Details and Vote</a>

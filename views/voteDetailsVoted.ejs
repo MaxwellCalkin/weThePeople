@@ -10,8 +10,26 @@
                                 <h3 class="card-title col"><%= bill.short_title ? bill.short_title : bill.title%></h3>
                                 <a href="https://www.govtrack.us/congress/bills/<%= bill.congress%>/<%= bill.bill_slug%>/text" class="col">View Full Text Of This Bill on govtrack.us</a>
                                 <div class="col">
-                                    Total WTP Votes: <%= votes %>
+                                    Total WTP Yeas: <%= yeas %>
                                 </div>
+                                <div class="col">
+                                    Total WTP Nays: <%= nays %>
+                                </div>
+                                <div class="col">
+                                    WTP Yeas In Your District: <%= yeasByDistrict %>
+                                </div>
+                                <div class="col">
+                                    WTP Nays In Your District: <%= naysByDistrict %>
+                                </div>
+                                <% if (bill.bill_type === 'hr') { %>
+                                    <div class="col">
+                                        Your House Representative: <%= repsArray[0].name%>(<%=firstRepsVote%>)
+                                    </div>
+                                <% }else{ %>
+                                    <div class="col">
+                                        Your Senators: <%= repsArray[0].name%>(<%=firstRepsVote%>), <%= repsArray[1].name%>(<%=secondRepsVote%>)
+                                    </div>
+                                <% } %>
                             </div>
                             <%if(bill.image) {%>
                                 <img src="<%=bill.image%>" alt="vote pic" class="col-4">
