@@ -5,8 +5,35 @@ const Comment = require("../models/Comment")
 module.exports = {
   getProfile: async (req, res) => {
     try {
+      // Get user's representatives
+      const houseResponse = await fetch(`https://api.propublica.org/congress/v1/members/house/${req.user.state.toUpperCase()}/${req.user.cd}/current.json`, {
+        headers: {
+          "X-API-KEY": `${process.env.CONGRESS_KEY}`,
+        }
+      })
+
+      const repData = await houseResponse.json()
+
+      const repsArray = repData.results
+
+      console.log("THIS IS REPS ARRAY", repsArray)
+
+      // Get user's representatives
+      const senateResponse = await fetch(`https://api.propublica.org/congress/v1/members/senate/${req.user.state.toUpperCase()}/current.json`, {
+        headers: {
+          "X-API-KEY": `${process.env.CONGRESS_KEY}`,
+        }
+      })
+
+      const senateData = await senateResponse.json()
+
+      const senateArray = senateData.results
+
+      console.log("THIS IS SENATE ARRAY", senateArray)
+
+      // Get an array of all user's posts
       const posts = await Post.find({ user: req.user.id });
-      res.render("profile.ejs", { posts: posts, user: req.user });
+      res.render("profile.ejs", { posts: posts, user: req.user, repsArray: repsArray, senateArray: senateArray });
     } catch (err) {
       console.log(err);
     }

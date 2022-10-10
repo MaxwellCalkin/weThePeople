@@ -152,7 +152,7 @@ module.exports = {
 
         const secondRepVotesDataOnThisBill = secondRepVotesData.results[0].votes.filter(x => x.bill.bill_id === bill.bill_id)
 
-        const secondRepsVote = secondRepVotesDataOnThisBill.length > 0 ? secondRepVotesDataOnThisBill[0].position : 'Did Not Vote On This Bill'
+        secondRepsVote = secondRepVotesDataOnThisBill.length > 0 ? secondRepVotesDataOnThisBill[0].position : 'Did Not Vote On This Bill'
 
         console.log(secondRepsVote, ': This Is secondRepsVote')
       }
@@ -185,9 +185,9 @@ module.exports = {
   },
   createYea: async (req, res) => {
     // Here We Go!
-    console.log('XHGDSHJAGDHSIKJANHUISJKNHXUIJKSHXSUIAJKXHSUIXKJSAHMXJKSAHXMSUKAJXHMSUNK')
-    console.log(req.body)
-    console.log(req.user)
+    console.log('Console.logs for createYea')
+    console.log("The User is: ", req.user)
+    console.log("Bill exists?: ", await Bill.exists({ billSlug: req.body.billSlug }))
     try {
 
       // If user hasn't voted on this bill yet, add it to their array. This won't be truly needed.
@@ -214,7 +214,7 @@ module.exports = {
           yeas: 1,
         })
       // Else, update either the yay or nay number
-      }else{
+      }else if(!req.user.yeaBillSlugs.includes(req.body.billSlug)){
           await Bill.findOneAndUpdate(
             { billSlug: req.body.billSlug },
             {
@@ -231,9 +231,9 @@ module.exports = {
   },
   createNay: async (req, res) => {
     // Here We Go!
-    console.log('XHGDSHJAGDHSIKJANHUISJKNHXUIJKSHXSUIAJKXHSUIXKJSAHMXJKSAHXMSUKAJXHMSUNK')
-    console.log(req.user)
-    console.log(await Bill.exists({ billSlug: req.body.billSlug }))
+    console.log('Console.logs for createNay')
+    console.log("The User is: ", req.user)
+    console.log("Bill exists?: ", await Bill.exists({ billSlug: req.body.billSlug }))
     try {
 
       // Add bill to the user's array of bills
@@ -261,7 +261,7 @@ module.exports = {
         })
         console.log('bill created')
       // Else, update either the yay or nay number
-      }else{
+      }else if(!req.user.nayBillSlugs.includes(req.body.billSlug)){
           await Bill.findOneAndUpdate(
             { billSlug: req.body.billSlug },
             {
