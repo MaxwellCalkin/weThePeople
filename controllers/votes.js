@@ -37,6 +37,27 @@ module.exports = {
       console.log(err);
     }
   },
+  getNewBills: async (req, res) => {
+    try {
+      const resp = await fetch(`https://api.propublica.org/congress/v1/bills/search.json`, {
+        headers: {
+          "X-API-KEY": `${process.env.CONGRESS_KEY}`,
+        }
+     })
+     
+     const data = await resp.json()
+     console.log('this is data ' + data)
+     const billsArray = data.results[0].bills
+     const user = req.user
+     if(billsArray[0].title){
+      res.render("newBills.ejs", { billsArray: billsArray, user: user })
+     }else {
+       res.redirect('feed.ejs')
+     }
+    } catch (err) {
+      console.log(err);
+    }
+  },
   getDetails: async (req, res) => {
     try {
       const resp = await fetch(`https://api.propublica.org/congress/v1/${req.params.congress}/bills/${req.params.bill_slug}.json`, {
@@ -64,7 +85,7 @@ module.exports = {
         }
       })
 
-      res.render("voteDetails.ejs", { bill: bill, votes: votes })
+      res.render("voteDetails.ejs", { bill: bill, votes: votes, user: req.user })
 
     } catch (err) {
       console.log(err);
@@ -134,7 +155,7 @@ module.exports = {
       // Set data equal to ONLY the data on the current bill
       const firstRepVotesDataOnThisBill = firstRepVotesData.results[0].votes.filter(x => x.bill.bill_id === bill.bill_id)
 
-      const firstRepsVote = firstRepVotesDataOnThisBill.length > 0 ? firstRepVotesDataOnThisBill[0].position : 'Did Not Vote On This Bill'
+      const firstRepsVote = firstRepVotesDataOnThisBill.length > 0 ? firstRepVotesDataOnThisBill[0].position : 'Has Not Voted On This Bill'
 
       console.log(firstRepsVote, 'This Is firstRepsVote')
       
@@ -152,7 +173,7 @@ module.exports = {
 
         const secondRepVotesDataOnThisBill = secondRepVotesData.results[0].votes.filter(x => x.bill.bill_id === bill.bill_id)
 
-        secondRepsVote = secondRepVotesDataOnThisBill.length > 0 ? secondRepVotesDataOnThisBill[0].position : 'Did Not Vote On This Bill'
+        secondRepsVote = secondRepVotesDataOnThisBill.length > 0 ? secondRepVotesDataOnThisBill[0].position : 'Has Not Voted On This Bill'
 
         console.log(secondRepsVote, ': This Is secondRepsVote')
       }
@@ -177,7 +198,16 @@ module.exports = {
 
       const naysByDistrict = naysByDistrictArray.length
 
-      res.render("voteDetailsVoted.ejs", { bill: bill, votes: votes, user: user, repsArray: repsArray, yeas: yeas, nays: nays, yeasByDistrict: yeasByDistrict, naysByDistrict: naysByDistrict, firstRepsVote: firstRepsVote, secondRepsVote: secondRepsVote })
+      // Does the user have a post for this bill already?
+      const postExists = await Post.exists( { user: user.id, billSlug: bill.bill_slug } )
+      // If User has a post for this bill, get the post data to send to ejs
+      let post = {}
+      if(postExists){
+        post = await Post.findOne( { user: user.id, billSlug: bill.bill_slug })
+        console.log("THIS IS POSTS---------------------------------------------------", post)
+      }
+
+      res.render("voteDetailsVoted.ejs", { bill: bill, votes: votes, user: user, repsArray: repsArray, yeas: yeas, nays: nays, yeasByDistrict: yeasByDistrict, naysByDistrict: naysByDistrict, firstRepsVote: firstRepsVote, secondRepsVote: secondRepsVote, postExists: postExists, post: post })
 
     } catch (err) {
       console.log(err);

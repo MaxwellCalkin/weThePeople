@@ -39,25 +39,39 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-5">
-                    <h2>Post About This Bill</h2>
-                    <form action="/post/createPost" enctype="multipart/form-data" method="POST">
-                      <div class="mb-3">
-                          <label for="title" class="form-label">Title</label>
-                          <input type="text" class="form-control" id="title" name="title">
-                          <input type="hidden" class="form-control" id="slug" name="billSlug" value="<%=bill.bill_slug%>">
-                      </div>
-                      <div class="mb-3">
-                        <label for="caption" class="form-label">Caption</label>
-                        <textarea class="form-control" id="caption" name="caption"></textarea>
-                      </div>
-                      <div class="mb-3">
-                        <label for="imgUpload" class="form-label">Image</label>
-                        <input type="file" class="form-control" id="imageUpload" name="file">
-                      </div>
-                      <button type="submit" class="btn btn-primary" value="Upload">Submit</button>
-                    </form>
-                  </div>
+                <% if (postExists) { %>
+                    <div class="mt-5">
+                        <h2>Your Post</h2>
+                        <div class="card col-sm-12 col-md-6 col-lg-4 p-0 mx-3">
+                            <img class="card-img-top" src="<%= post.image%>">
+                            <div class="card-body">
+                            <h5 class="card-title"><%= post.title%></h5>
+                            <a class=""href="/post/<%= post._id%>">View Post</a>
+                            </div>
+                        </div>
+                    </div>
+                <% } else {%>
+                    <div class="mt-5">
+                        <h2>Post About This Bill</h2>
+                        <form action="/post/createPost" enctype="multipart/form-data" method="POST">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" name="title">
+                            <input type="hidden" class="form-control" id="slug" name="billSlug" value="<%=bill.bill_slug%>">
+                            <input type="hidden" class="form-control" id="slug" name="billCongress" value="<%=bill.congress%>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="caption" class="form-label">Caption</label>
+                            <textarea class="form-control" id="caption" name="caption"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="imgUpload" class="form-label">Image</label>
+                            <input type="file" class="form-control" id="imageUpload" name="file">
+                        </div>
+                        <button type="submit" class="btn btn-primary" value="Upload">Submit</button>
+                        </form>
+                    </div>
+                <% } %>
             </div>
         </div>
     </div>  

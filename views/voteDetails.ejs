@@ -38,8 +38,8 @@
                     </div>
                 </div>
                 <div class="mt-5">
-                    <h2>Post About This Bill</h2>
-                    <form action="/post/createPost" enctype="multipart/form-data" method="POST">
+                    <h2>Vote On This Bill To Make A Post</h2>
+                    <fieldset disabled="disabled">
                       <div class="mb-3">
                           <label for="title" class="form-label">Title</label>
                           <input type="text" class="form-control" id="title" name="title">
@@ -52,9 +52,10 @@
                         <label for="imgUpload" class="form-label">Image</label>
                         <input type="file" class="form-control" id="imageUpload" name="file">
                         <input type="hidden" class="form-control" id="slug" name="billSlug" value="<%=bill.bill_slug%>">
+                        <input type="hidden" class="form-control" id="slug" name="billCongress" value="<%=bill.congress%>">
                       </div>
                       <button type="submit" class="btn btn-primary" value="Upload">Submit</button>
-                    </form>
+                    </fieldset>
                   </div>
             </div>
         </div>

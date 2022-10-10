@@ -41,7 +41,7 @@ module.exports = {
   getFeed: async (req, res) => {
     try {
       const posts = await Post.find().sort({ createdAt: "desc" }).lean();
-      res.render("feed.ejs", { posts: posts });
+      res.render("feed.ejs", { posts: posts, user: req.user });
     } catch (err) {
       console.log(err);
     }
@@ -64,13 +64,17 @@ module.exports = {
       await Post.create({
         title: req.body.title,
         image: result.secure_url,
+        billSlug: req.body.billSlug,
+        billCongress: req.body.billCongress,
         cloudinaryId: result.public_id,
         caption: req.body.caption,
         likes: 0,
         user: req.user.id,
       });
       console.log("Post has been added!");
-      res.redirect("/profile");
+
+      console.log(req.body)
+      res.redirect(`/vote/detailsVoted/${req.body.billSlug}/${req.body.billCongress}`);
     } catch (err) {
       console.log(err);
     }
