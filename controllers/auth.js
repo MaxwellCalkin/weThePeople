@@ -66,19 +66,12 @@ exports.getSignup = (req, res) => {
 };
 
 exports.postSignup = async (req, res, next) => {
+
   const resp = await fetch(`https://civicinfo.googleapis.com/civicinfo/v2/representatives?address=${req.body.address}&levels=country&roles=legislatorLowerBody&key=${process.env.GOOGLE_KEY}`, {
     method: "GET",
     "Content-type": "application/json"
   })
   const data = await resp.json()
-  console.log(data.offices)
-  const divId = data.offices[0].divisionId
-  console.log(typeof divId, divId)
-  const state = divId.split("state:")[1].split("/")[0]
-  const cd = divId.split("cd:")[1]
-
-  console.log(state, cd)
-
   const validationErrors = [];
   if (!validator.isEmail(req.body.email))
     validationErrors.push({ msg: "Please enter a valid email address." });
@@ -88,7 +81,9 @@ exports.postSignup = async (req, res, next) => {
     });
   if (req.body.password !== req.body.confirmPassword)
     validationErrors.push({ msg: "Passwords do not match" });
-
+  if(!data.offices){
+    validationErrors.push({ msg: "Your address did not load properly. Try reformatting and submit again." });
+  }
   if (validationErrors.length) {
     req.flash("errors", validationErrors);
     return res.redirect("../signup");
@@ -96,7 +91,14 @@ exports.postSignup = async (req, res, next) => {
   req.body.email = validator.normalizeEmail(req.body.email, {
     gmail_remove_dots: false,
   });
+  console.log(data.offices)
+  const divId = data.offices[0].divisionId
+  console.log(typeof divId, divId)
+  const state = divId.split("state:")[1].split("/")[0]
+  const cd = divId.split("cd:")[1]
 
+  console.log(state, cd)
+  
   const user = new User({
     userName: req.body.userName,
     email: req.body.email,
@@ -104,7 +106,7 @@ exports.postSignup = async (req, res, next) => {
     state: state,
     cd: cd,
   });
-
+  
   User.findOne(
     { $or: [{ email: req.body.email }, { userName: req.body.userName }] },
     (err, existingUser) => {

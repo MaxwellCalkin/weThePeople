@@ -16,9 +16,13 @@
         <ul class="row list-unstyled">
         <% for(var i=0; i<posts.length; i++) {%>
           <li class="col-6 justify-content-between mt-5">
-            <a href="/post/<%= posts[i]._id%>">
-              <img class="img-fluid pic-fit" src="<%= posts[i].image%>">
-            </a>
+            <div class="card p-0 mx-1">
+              <img class="card-img-top" src="<%= posts[i].image%>">
+              <div class="card-body">
+                <h5 class="card-title"><%= posts[i].title%></h5>
+                <a class=""href="/post/<%= posts[i]._id%>">View Post</a>
+              </div>
+            </div>
           </li>
         <% } %>
         </ul>
