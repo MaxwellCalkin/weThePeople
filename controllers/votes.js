@@ -4,6 +4,7 @@ const Comment = require("../models/Comment");
 const Bill = require("../models/Bill");
 const User = require("../models/User");
 const { findOneAndUpdate } = require("../models/Post");
+const fetch = require("node-fetch")
 
 
 module.exports = {
