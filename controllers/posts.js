@@ -1,7 +1,6 @@
 const cloudinary = require("../middleware/cloudinary");
 const Post = require("../models/Post");
 const Comment = require("../models/Comment")
-import fetch from "node-fetch"
 
 module.exports = {
   getProfile: async (req, res) => {
