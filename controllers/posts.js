@@ -14,6 +14,8 @@ module.exports = {
         }
       })
 
+      console.log("this is houseResponse", houseResponse)
+
       const repData = await houseResponse.json()
 
       const repsArray = repData.results
