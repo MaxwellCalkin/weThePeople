@@ -7,6 +7,7 @@ module.exports = {
   getProfile: async (req, res) => {
     try {
       // Get user's representatives
+      console.log("this is req.user", req.user)
       const houseResponse = await fetch(`https://api.propublica.org/congress/v1/members/house/${req.user.state.toUpperCase()}/${req.user.cd}/current.json`, {
         headers: {
           "X-API-KEY": `${process.env.CONGRESS_KEY}`,
