@@ -16,21 +16,17 @@ I'm excited that I get to use the ProPublica API to fetch real data on congress 
 ## Demo Login
 
 
-Demo Email: max@max.max
+Demo Email: deb@deb.deb
 
-Demo password: maxmaxmax
+Demo password: debdebdeb
 
 ## Optimizations
 
-Current Projects: Reworking the "Yea or Nay" system on each bill. Right now you can search for any bill and vote on it, and I'm adding the functionality to display WTP votes on this bill, WTP votes in your congressional district on this bill, and how your senator or representative voted. This is a core function of the mission of WTP.
-
-Projects On Deck: This week I will be adding the ability to make a typical social media post that is linked to a bill. The most-liked post for each bill will appear with the bill. I am also about to start updating the user's profile page to include info about their congressional district and voting opportunities.
+Current Projects: Implementing infinite scrolling through "New Bills" and "Hot Posts." Allowing people to make it public that they voted on a particular bill. Notifications for when your representative votes on a bill you've voted on.
 
 ## Lessons Learned:
 
 I'm learning so much about the American political system. I've gone much more in depth about how bills become laws. My knowledge of MVC is being stretched by complex requests that involve reaching out to multiple 3rd party APIs.
-
-
 
 
 ## More Projects
