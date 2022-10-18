@@ -1,4 +1,4 @@
-# We The People : <a target="_blank" href="https://www.wethepeople.cyclic.app">Visit Now!</a>
+# We The People : <a target="_blank" href="https://www.wethepeople.cyclic.app">Visit Here</a>
 
 <a target="_blank" href="#">
 <img src="https://github.com/MaxwellCalkin/weThePeople/blob/main/public/imgs/wtp.png" width="100%" alt="We The People logo"/>
