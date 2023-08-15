@@ -1,33 +1,97 @@
 <%- include('partials/headerBoot') -%>
-<div class="container">
-  <div class="row mt-5">
-      <div class="col-6">
-        <h2 class="text-center">Profile</h2>
-          <div>
-              <p><strong>User Name</strong>: <%= user.userName %></p>
-              <p><strong>Email</strong>: <%= user.email %></p>
-              <p><strong>Your Congressional District</strong>: <%=user.state.toUpperCase() %>'s District Number <%=user.cd%></p>
-              <p><strong>Your House Representative</strong>: <%= repsArray[0].name %></p>
-              <p><strong>Your State's Senators</strong>: <%= senateArray[0].name%>, <%=senateArray[1].name %></p>
-              <a href="/logout" class="col-3 btn btn-primary">Logout</a>
-          </div>
-      </div>
-      <div class="col-6">
-        <h2 class="text-center">Your Posts</h2>
-        <ul class="row list-unstyled">
-        <% for(var i=0; i<posts.length; i++) {%>
-          <li class="col-6 justify-content-between mt-5">
-            <div class="card p-0 mx-1">
-              <img class="card-img-top" src="<%= posts[i].image%>">
+<div class="container mx-auto px-4 mt-5">
+  <div class="max-w-3xl mx-auto">
+    <div class="profile-section p-4 mb-4" style="background-color: #e5e1f1">
+      <h2 class="text-center mb-4">
+        <%= user.userName.charAt(0).toUpperCase() + user.userName.slice(1) %>'s
+        Profile
+      </h2>
+      <p>
+        <strong>Congressional District:</strong> <%= user.state.toUpperCase() %>
+        District Number <%= user.cd %>
+      </p>
+      <p><strong>House Representative:</strong> <%= repsArray[0].name %></p>
+      <p>
+        <strong>State Senators:</strong> <%= senateArray[0].name %>, <%=
+        senateArray[1].name %>
+      </p>
+    </div>
+    <div class="profile-section p-4" style="background-color: #e5e1f1">
+      <!-- Tab Navigation -->
+      <ul class="nav nav-tabs mb-3" id="profileTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="votes-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#votes"
+            type="button"
+            role="tab"
+            aria-controls="votes"
+            aria-selected="true"
+          >
+            Votes
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="posts-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#posts"
+            type="button"
+            role="tab"
+            aria-controls="posts"
+            aria-selected="false"
+          >
+            Posts
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="profileTabsContent">
+        <!-- Votes Tab Content -->
+        <div
+          class="tab-pane fade show active"
+          id="votes"
+          role="tabpanel"
+          aria-labelledby="votes-tab"
+        >
+          <!-- Content of the "Votes" tab -->
+            <% for (let i = 0; i < votes.length; i++) { %>
+            <div class="card mb-3">
               <div class="card-body">
-                <h5 class="card-title"><%= posts[i].title%></h5>
-                <a class=""href="/post/<%= posts[i]._id%>">View Post</a>
+                <h5 class="card-title"><%= votes[i].bill.title %></h5>
+                <p class="card-text">
+                  Date: <%= votes[i].bill.createdAt.toDateString()%>
+                </p>
+                <p class="card-text">Your Position: <%= votes[i].position %></p>
+                <p class="card-text">Total Yeas: <%= votes[i].bill.yeas %></p>
+                <p class="card-text">Total Nays: <%= votes[i].bill.nays %></p>
               </div>
             </div>
-          </li>
-        <% } %>
-        </ul>
-      </div>  
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Posts Tab Content -->
+      <div class="tab-pane fade" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+          <% for (var i = 0; i < posts.length; i++) { %>
+          <div class="col">
+            <div class="card rounded overflow-hidden shadow-md">
+              <img class="card-img-top" src="<%= posts[i].image %>" alt="<%= posts[i].title %>" />
+              <div class="card-body">
+                <h5 class="card-title text-xl font-semibold mb-2"><%= posts[i].title %></h5>
+                <a class="block text-indigo-600 hover:underline" href="/post/<%= posts[i]._id %>">View Post</a>
+              </div>
+            </div>
+          </div>
+          <% } %>
+        </div>
+      </div>
+      </div>
     </div>
   </div>
 </div>
