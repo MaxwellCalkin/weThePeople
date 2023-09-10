@@ -1,7 +1,7 @@
 # We The People : <a target="_blank" href="https://www.wethepeople.cyclic.app">Visit Here</a>
 
 <a target="_blank" href="http://wethepeople.cyclic.app">
-<img src="https://github.com/MaxwellCalkin/MaxwellCalkin/blob/main/images/wtp.gif?raw=true" width="100%" alt="We The People logo"/>
+<img src="https://github.com/MaxwellCalkin/MaxwellCalkin/blob/main/images/wtp.gif?raw=true" width="100%" alt="We The People gif"/>
 </a>
 
 ### What do we want?!  Integrity in politics! How do we get it?!  We The People!
