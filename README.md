@@ -1,6 +1,6 @@
 # We The People : <a target="_blank" href="https://www.wethepeople.cyclic.app">Visit Here</a>
 
-<a target="http://wethepeople.cyclic.app" href="#">
+<a target="_blank" href="http://wethepeople.cyclic.app">
 <img src="https://github.com/MaxwellCalkin/MaxwellCalkin/blob/main/images/wtp.gif?raw=true" width="100%" alt="We The People logo"/>
 </a>
 
