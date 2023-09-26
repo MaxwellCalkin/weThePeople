@@ -59,38 +59,59 @@
           aria-labelledby="votes-tab"
         >
           <!-- Content of the "Votes" tab -->
-            <% for (let i = 0; i < votes.length; i++) { %>
-            <div class="card mb-3">
-              <div class="card-body">
-                <h5 class="card-title"><%= votes[i].bill.title %></h5>
-                <p class="card-text">
-                  Date: <%= votes[i].bill.createdAt.toDateString()%>
-                </p>
-                <p class="card-text">Your Position: <%= votes[i].position %></p>
-                <p class="card-text">Total Yeas: <%= votes[i].bill.yeas %></p>
-                <p class="card-text">Total Nays: <%= votes[i].bill.nays %></p>
+          <% const filteredVotes = votes.filter(vote => vote.bill); %> <% for
+          (let i = 0; i < filteredVotes.length; i++) { %>
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title"><%= filteredVotes[i].bill.title %></h5>
+              <p class="card-text">
+                Date: <%= filteredVotes[i].bill.createdAt.toDateString()%>
+              </p>
+              <p class="card-text">
+                Your Position: <%= filteredVotes[i].position %>
+              </p>
+              <p class="card-text">
+                Total Yeas: <%= filteredVotes[i].bill.yeas %>
+              </p>
+              <p class="card-text">
+                Total Nays: <%= filteredVotes[i].bill.nays %>
+              </p>
+            </div>
+          </div>
+          <% } %>
+        </div>
+
+        <!-- Posts Tab Content -->
+        <div
+          class="tab-pane fade"
+          id="posts"
+          role="tabpanel"
+          aria-labelledby="posts-tab"
+        >
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+            <% for (var i = 0; i < posts.length; i++) { %>
+            <div class="col">
+              <div class="card rounded overflow-hidden shadow-md">
+                <img
+                  class="card-img-top"
+                  src="<%= posts[i].image %>"
+                  alt="<%= posts[i].title %>"
+                />
+                <div class="card-body">
+                  <h5 class="card-title text-xl font-semibold mb-2">
+                    <%= posts[i].title %>
+                  </h5>
+                  <a
+                    class="block text-indigo-600 hover:underline"
+                    href="/post/<%= posts[i]._id %>"
+                    >View Post</a
+                  >
+                </div>
               </div>
             </div>
             <% } %>
           </div>
         </div>
-
-        <!-- Posts Tab Content -->
-      <div class="tab-pane fade" id="posts" role="tabpanel" aria-labelledby="posts-tab">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
-          <% for (var i = 0; i < posts.length; i++) { %>
-          <div class="col">
-            <div class="card rounded overflow-hidden shadow-md">
-              <img class="card-img-top" src="<%= posts[i].image %>" alt="<%= posts[i].title %>" />
-              <div class="card-body">
-                <h5 class="card-title text-xl font-semibold mb-2"><%= posts[i].title %></h5>
-                <a class="block text-indigo-600 hover:underline" href="/post/<%= posts[i]._id %>">View Post</a>
-              </div>
-            </div>
-          </div>
-          <% } %>
-        </div>
-      </div>
       </div>
     </div>
   </div>
