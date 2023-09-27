@@ -1,63 +1,145 @@
 <%- include('partials/headerBoot') -%>
-<div class="container">
-  <div class="row justify-content-center mt-5">
-    <div class="col-6">
-      <div class="row">
-        <h2><%= post.title %></h2>
-      <%if(user.yeaBillSlugs.includes(post.billSlug) || user.nayBillSlugs.includes(post.billSlug)) {%>
-        <a href="/vote/detailsVoted/<%=post.billSlug%>/<%=post.billCongress%>">You Voted! View Details</a>
-      <%} else { %>    
-        <a href="/vote/details/<%=post.billSlug%>/<%=post.billCongress%>">View Details and Vote</a>
-      <%} %>
-      </div>
-      <img class="img-fluid" src="<%= post.image%>" />
-      <div class="row justify-content-between">
-        <form
-          class="col-1"
-          action="/post/likePost/<%= post.id %>?_method=PUT"
-          method="POST"
-        >
-          <button class="btn btn-primary fa fa-heart" type="submit"></button>
-        </form>
-        <h3 class="col-3">Likes: <%= post.likes %></h3>
-        <%if(post.user == user.id) { %>
-        <form
-          action="/post/deletePost/<%= post.id %>?_method=DELETE"
-          method="POST"
-          class="col-3"
-        >
-          <button class="btn btn-primary fa fa-trash" type="submit"></button>
-        </form>
-        <%}%>
-      </div>
-    </div>
-    <div class="col-3 mt-5">
-      <p><%= post.caption %></p>
-    </div>
-    <div class="mt-5">
-      <h2>Add a comment</h2>
-      <form action="/comment/createComment/<%=post._id%>" method="POST">
-        <div class="mb-3">
-            <label for="comment" class="form-label">Comment</label>
-            <input type="text" class="form-control" id="comment" name="comment">
+<style>
+  /* Custom CSS for styling adjustments */
+
+  .post-title {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .post-content {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .post-left {
+    flex: 2;
+    padding-right: 20px;
+  }
+
+  .post-right {
+    flex: 1;
+  }
+
+  .post-image img {
+    width: 100%;
+    padding-right: 20px;
+  }
+
+  /* Add margin to the buttons for spacing */
+  .like-button {
+    margin-right: 5px;
+  }
+
+  /* Add margin between textarea and Submit button */
+  .comment-textarea {
+    margin-bottom: 5px;
+  }
+
+  /* Responsive layout for tablet and smaller screens */
+  @media (max-width: 768px) {
+    .post-content {
+      flex-direction: column;
+    }
+
+    .post-right {
+      order: -1; /* Place the image column above other content */
+      margin-bottom: 10px; /* Add some spacing between image and caption */
+    }
+  }
+</style>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title post-title"><%= post.title %></h2>
+          <hr />
+          <div class="post-content">
+            <div class="post-right">
+              <div class="post-image">
+                <img src="<%= post.image %>" alt="<%= post.title %>" />
+              </div>
+            </div>
+            <div class="post-left">
+              <p class="card-text"><%= post.caption %></p>
+              <div class="d-flex justify-content-between align-items-center">
+                <% if (user.yeaBillSlugs.includes(post.billSlug) ||
+                user.nayBillSlugs.includes(post.billSlug)) { %>
+                <a
+                  class="btn btn-success btn-sm"
+                  href="/vote/detailsVoted/<%= post.billSlug %>/<%= post.billCongress %>"
+                  >View Details</a
+                >
+                <% } else { %>
+                <a
+                  class="btn btn-primary btn-sm"
+                  href="/vote/details/<%= post.billSlug %>/<%= post.billCongress %>"
+                  >Vote Now</a
+                >
+                <% } %>
+                <div class="btn-group" style="margin-left: 10px">
+                  <form
+                    action="/post/likePost/<%= post.id %>?_method=PUT"
+                    method="POST"
+                    class="like-button"
+                  >
+                    <button class="btn btn-outline-primary" type="submit">
+                      <i class="far fa-thumbs-up"></i> <%= post.likes %>
+                    </button>
+                  </form>
+                  <% if (post.user == user.id) { %>
+                  <form
+                    action="/post/deletePost/<%= post.id %>?_method=DELETE"
+                    method="POST"
+                    class="like-button"
+                  >
+                    <button class="btn btn-outline-danger" type="submit">
+                      <i class="far fa-trash-alt"></i>
+                    </button>
+                  </form>
+                  <% } %>
+                </div>
+              </div>
+              <div class="mt-4">
+                <h4>Add a Comment</h4>
+                <form
+                  action="/comment/createComment/<%= post._id %>"
+                  method="POST"
+                >
+                  <div class="form-group">
+                    <!-- Replace input with textarea and add margin -->
+                    <textarea
+                      class="form-control comment-textarea"
+                      id="comment"
+                      name="comment"
+                      rows="4"
+                      placeholder="Write a comment..."
+                    ></textarea>
+                  </div>
+                  <!-- Normal-sized Submit button -->
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+              </div>
+              <div class="mt-4">
+                <h4>Comments</h4>
+                <ul class="list-group">
+                  <% for (var i = 0; i < comments.length; i++) { %>
+                  <li class="list-group-item"><%= comments[i].comment %></li>
+                  <% } %>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
-    </div>
-    <div class="comments">
-      <ul>
-        <%for(var i=0; i < comments.length; i++) { %>
-          <li class="col-6 justify-content-between mt-5">
-            <%=comments[i].comment%>
-          </li>
-        <%} %>
-      </ul>
-    </div>
-    <div class="col-6 mt-5">
-      <a class="btn btn-primary" href="/profile">Return to Profile</a>
-      <a class="btn btn-primary" href="/feed">Return to Feed</a>
+      </div>
+      <div class="mt-3 text-center">
+        <a class="btn btn-secondary" href="/profile">Return to Profile</a>
+        <a class="btn btn-secondary" href="/feed">Return to Feed</a>
+      </div>
     </div>
   </div>
 </div>
-
 <%- include('partials/footer') -%>
