@@ -6,6 +6,13 @@
     text-align: center;
     margin-top: 20px;
     margin-bottom: 20px;
+    font-size: 1.5rem;
+  }
+
+  .post-summary {
+    text-align: center;
+    font-size: 1rem; /* Set the font size for the summary */
+    margin-bottom: 20px;
   }
 
   .post-content {
@@ -56,6 +63,15 @@
       <div class="card">
         <div class="card-body">
           <h2 class="card-title post-title"><%= post.title %></h2>
+          <p class="post-summary">
+            <!-- yea if bill exists in user's yeaBillSlugs array. Otherwise, Nay. -->
+            <strong
+              ><%= user.userName %> voted <%=
+              user.yeaBillSlugs.includes(post.billSlug) ? 'Yea' : 'Nay'
+              %></strong
+            >
+            - <%= bill.title %>
+          </p>
           <hr />
           <div class="post-content">
             <div class="post-right">

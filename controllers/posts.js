@@ -83,10 +83,12 @@ module.exports = {
       const comments = await Comment.find({ post: req.params.id })
         .sort({ createdAt: "desc" })
         .lean();
+      const bill = await Bill.findOne({ billSlug: post.billSlug });
 
       res.render("post.ejs", {
         post: post,
         comments: comments,
+        bill: bill,
         user: req.user,
       });
     } catch (err) {
