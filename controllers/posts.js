@@ -4,63 +4,71 @@ const Comment = require("../models/Comment");
 const Bill = require("../models/Bill");
 const fetch = require("node-fetch");
 
+// Helper: get current congress number (119th for 2025-2026)
+function getCurrentCongress() {
+  const year = new Date().getFullYear();
+  return Math.floor((year - 1789) / 2) + 1;
+}
+
+// Helper: fetch members from Congress.gov API by state (and optionally district)
+async function fetchMembers(state, district) {
+  const base = "https://api.congress.gov/v3/member";
+  let url;
+  if (district) {
+    url = `${base}/${state.toUpperCase()}/${district}?currentMember=true&api_key=${process.env.CONGRESS_KEY}&format=json`;
+  } else {
+    url = `${base}/${state.toUpperCase()}?currentMember=true&api_key=${process.env.CONGRESS_KEY}&format=json`;
+  }
+  const resp = await fetch(url);
+  const data = await resp.json();
+  const members = data.members || [];
+  // Normalize to match the field names the EJS templates expect
+  return members.map((m) => ({
+    id: m.bioguideId,
+    name: m.name || `${m.firstName || ""} ${m.lastName || ""}`.trim(),
+    party: m.partyName || m.party || "",
+    state: m.state,
+    district: m.district,
+    url: m.officialUrl || m.url || "",
+  }));
+}
+
 module.exports = {
   getProfile: async (req, res) => {
     try {
-      // Get user's representatives
-      console.log("this is req.user", req.user);
-      const houseResponse = await fetch(
-        `https://api.propublica.org/congress/v1/members/house/${req.user.state.toUpperCase()}/${
-          req.user.cd
-        }/current.json`,
-        {
-          headers: {
-            "X-API-KEY": `${process.env.CONGRESS_KEY}`,
-          },
-        }
+      // Get user's House representatives
+      const repsArray = await fetchMembers(req.user.state, req.user.cd);
+
+      // Get user's Senators (no district filter = returns all members for state, filter to senate)
+      const allStateMembers = await fetchMembers(req.user.state);
+      // Senators have no district field
+      const senateArray = allStateMembers.filter(
+        (m) => !m.district || m.district === 0
       );
-
-      const repData = await houseResponse.json();
-
-      const repsArray = repData.results;
-
-      // Get user's representatives
-      const senateResponse = await fetch(
-        `https://api.propublica.org/congress/v1/members/senate/${req.user.state.toUpperCase()}/current.json`,
-        {
-          headers: {
-            "X-API-KEY": `${process.env.CONGRESS_KEY}`,
-          },
-        }
-      );
-
-      const senateData = await senateResponse.json();
-
-      const senateArray = senateData.results;
 
       // Get an array of all user's posts
       const posts = await Post.find({ user: req.user.id });
 
-      //Get an array of all the bills this user has voted on
+      // Get an array of all the bills this user has voted on
       let votes = [];
-      let numOfYeasInUsersArray = req.user.yeaBillSlugs.length;
-      let numOfNaysInUsersArray = req.user.nayBillSlugs.length;
-      //this loop goes through all the bills this user has voted on and adds them to the votes array
       for (let i = 0; i < req.user.yeaBillSlugs.length; i++) {
-        const bill = await Bill.findOne({ billSlug: req.user.yeaBillSlugs[i] });
+        const bill = await Bill.findOne({
+          billSlug: req.user.yeaBillSlugs[i],
+        });
         votes.push({ bill: bill, position: "Yea" });
-        console.log(votes);
       }
       for (let i = 0; i < req.user.nayBillSlugs.length; i++) {
-        const bill = await Bill.findOne({ billSlug: req.user.nayBillSlugs[i] });
+        const bill = await Bill.findOne({
+          billSlug: req.user.nayBillSlugs[i],
+        });
         votes.push({ bill: bill, position: "Nay" });
       }
 
       res.render("profile.ejs", {
         posts: posts,
         votes: votes,
-        numOfYeasInUserArray: numOfYeasInUsersArray,
-        numOfNaysInUserArray: numOfNaysInUsersArray,
+        numOfYeasInUserArray: req.user.yeaBillSlugs.length,
+        numOfNaysInUserArray: req.user.nayBillSlugs.length,
         user: req.user,
         repsArray: repsArray,
         senateArray: senateArray,
@@ -114,7 +122,6 @@ module.exports = {
       });
       console.log("Post has been added!");
 
-      console.log(req.body);
       res.redirect(
         `/vote/detailsVoted/${req.body.billSlug}/${req.body.billCongress}`
       );
