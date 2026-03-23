@@ -127,7 +127,7 @@ async function fetchMembers(state, district) {
 }
 
 // Helper: look up a member's vote on a specific bill using Congress.gov actions endpoint
-// Returns "Yea", "Nay", or "Has Not Voted On This Bill"
+// Returns "Yea", "Nay", "Passed by Unanimous Consent", "Passed by Voice Vote", or "Has Not Voted On This Bill"
 async function getMemberVoteOnBill(memberId, congress, billType, billNumber, chamber) {
   try {
     // Step 1: Get bill actions to find roll call vote numbers
@@ -138,13 +138,28 @@ async function getMemberVoteOnBill(memberId, congress, billType, billNumber, cha
 
     // Find actions that have recorded votes
     let rollCallVotes = [];
+    let passedByUC = false;
+    let passedByVoice = false;
     for (const action of actions) {
       if (action.recordedVotes && action.recordedVotes.length > 0) {
         rollCallVotes.push(...action.recordedVotes);
       }
+      // Detect unanimous consent or voice vote passages
+      const text = (action.text || "").toLowerCase();
+      if (text.includes("passed") || text.includes("agreed to")) {
+        if (text.includes("unanimous consent") || text.includes("without objection") || text.includes("without amendment")) {
+          passedByUC = true;
+        }
+        if (text.includes("voice vote")) {
+          passedByVoice = true;
+        }
+      }
     }
 
     if (rollCallVotes.length === 0) {
+      // No recorded roll call vote — check if it passed another way
+      if (passedByUC) return "Passed by Unanimous Consent";
+      if (passedByVoice) return "Passed by Voice Vote";
       return "Has Not Voted On This Bill";
     }
 
@@ -279,22 +294,18 @@ module.exports = {
         votes = existingBill.yeas + existingBill.nays;
       }
 
-      // Get representatives based on bill type
-      let repsArray;
-      if (bill.bill_type === "hr" || bill.bill_type === "hres" || bill.bill_type === "hjres" || bill.bill_type === "hconres") {
-        repsArray = await fetchMembers(req.user.state, req.user.cd);
-      } else {
-        const allMembers = await fetchMembers(req.user.state);
-        repsArray = allMembers.filter((m) => !m.district || m.district === 0);
-      }
+      // Always get both House rep AND senators for the user
+      const houseReps = await fetchMembers(req.user.state, req.user.cd);
+      const allStateMembers = await fetchMembers(req.user.state);
+      const senators = allStateMembers.filter((m) => !m.district || m.district === 0);
+
+      // Combine: House rep first, then senators
+      const repsArray = [...houseReps.slice(0, 1), ...senators.slice(0, 2)];
 
       console.log("THIS IS REPS ARRAY", repsArray);
 
-      // Look up each rep's vote on this bill
+      // Look up each rep's/senator's vote on this bill
       const parsed = parseBillSlug(bill.bill_slug);
-      const chamber = (bill.bill_type === "hr" || bill.bill_type === "hres" || bill.bill_type === "hjres" || bill.bill_type === "hconres")
-        ? "house"
-        : "senate";
 
       let firstRepsVote = "Has Not Voted On This Bill";
       if (repsArray.length > 0 && parsed) {
@@ -303,7 +314,7 @@ module.exports = {
           req.params.congress,
           parsed.type,
           parsed.number,
-          chamber
+          "house"
         );
       }
 
@@ -314,7 +325,7 @@ module.exports = {
           req.params.congress,
           parsed.type,
           parsed.number,
-          chamber
+          "senate"
         );
       }
 
