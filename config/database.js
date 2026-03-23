@@ -11,9 +11,18 @@ const connectDB = async () => {
     return cached.conn;
   }
 
+  const uri = process.env.DB_STRING;
+  if (!uri) {
+    console.error("DB_STRING environment variable is not set!");
+    return null;
+  }
+
   if (!cached.promise) {
     cached.promise = mongoose
-      .connect(process.env.DB_STRING)
+      .connect(uri, {
+        // Required for some serverless environments
+        serverSelectionTimeoutMS: 10000,
+      })
       .then((mongoose) => {
         console.log(`MongoDB Connected: ${mongoose.connection.host}`);
         return mongoose;
@@ -24,7 +33,7 @@ const connectDB = async () => {
     cached.conn = await cached.promise;
   } catch (err) {
     cached.promise = null;
-    console.error(err);
+    console.error("MongoDB connection error:", err.message);
   }
 
   return cached.conn;

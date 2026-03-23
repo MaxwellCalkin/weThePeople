@@ -37,5 +37,8 @@
   "bugs": {
     "url": "https://github.com/MaxwellCalkin/binary-upload-boom/issues"
   },
-  "homepage": "https://github.com/MaxwellCalkin/binary-upload-boom#readme"
+  "homepage": "https://github.com/MaxwellCalkin/binary-upload-boom#readme",
+  "engines": {
+    "node": "20.x"
+  }
 }
