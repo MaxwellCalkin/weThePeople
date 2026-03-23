@@ -291,39 +291,49 @@ module.exports = {
         votes = existingBill.yeas + existingBill.nays;
       }
 
-      // Always get both House rep AND senators for the user
-      const houseReps = await fetchMembers(req.user.state, req.user.cd);
-      const allStateMembers = await fetchMembers(req.user.state);
-      const senators = allStateMembers.filter((m) => !m.district || m.district === 0);
-
-      // Combine: House rep first, then senators
-      const repsArray = [...houseReps.slice(0, 1), ...senators.slice(0, 2)];
-
-      console.log("THIS IS REPS ARRAY", repsArray);
-
-      // Look up each rep's/senator's vote on this bill
+      // Determine which chamber this bill belongs to
       const parsed = parseBillSlug(bill.bill_slug);
+      const houseBillTypes = ["hr", "hres", "hjres", "hconres"];
+      const isHouseBill = houseBillTypes.includes(bill.bill_type || "");
 
+      let repsArray = [];
       let firstRepsVote = "Has Not Voted On This Bill";
-      if (repsArray.length > 0 && parsed) {
-        firstRepsVote = await getMemberVoteOnBill(
-          repsArray[0].id,
-          req.params.congress,
-          parsed.type,
-          parsed.number,
-          "house"
-        );
-      }
-
       let secondRepsVote = undefined;
-      if (repsArray.length > 1 && parsed) {
-        secondRepsVote = await getMemberVoteOnBill(
-          repsArray[1].id,
-          req.params.congress,
-          parsed.type,
-          parsed.number,
-          "senate"
-        );
+
+      if (isHouseBill) {
+        // House bill — only show House representative
+        repsArray = await fetchMembers(req.user.state, req.user.cd);
+        if (repsArray.length > 0 && parsed) {
+          firstRepsVote = await getMemberVoteOnBill(
+            repsArray[0].id,
+            req.params.congress,
+            parsed.type,
+            parsed.number,
+            "house"
+          );
+        }
+      } else {
+        // Senate bill — only show Senators
+        const allStateMembers = await fetchMembers(req.user.state);
+        repsArray = allStateMembers.filter((m) => !m.district || m.district === 0);
+        if (repsArray.length > 0 && parsed) {
+          firstRepsVote = await getMemberVoteOnBill(
+            repsArray[0].id,
+            req.params.congress,
+            parsed.type,
+            parsed.number,
+            "senate"
+          );
+        }
+        if (repsArray.length > 1 && parsed) {
+          secondRepsVote = await getMemberVoteOnBill(
+            repsArray[1].id,
+            req.params.congress,
+            parsed.type,
+            parsed.number,
+            "senate"
+          );
+        }
       }
 
       const yeasArray = await User.find({ yeaBillSlugs: bill.bill_slug });
