@@ -75,10 +75,11 @@ async function searchBills(query) {
   // Let's try using the LOC search API
   let url;
   if (query) {
-    // Use congress.gov search API
-    url = `${CONGRESS_API}/bill?query=${encodeURIComponent(query)}&limit=20&api_key=${process.env.CONGRESS_KEY}&format=json`;
+    // Search within current congress
+    url = `${CONGRESS_API}/bill/${congress}?query=${encodeURIComponent(query)}&limit=20&sort=updateDate+desc&api_key=${process.env.CONGRESS_KEY}&format=json`;
   } else {
-    url = `${CONGRESS_API}/bill?limit=20&sort=updateDate+desc&api_key=${process.env.CONGRESS_KEY}&format=json`;
+    // Latest bills from current congress
+    url = `${CONGRESS_API}/bill/${congress}?limit=20&sort=updateDate+desc&api_key=${process.env.CONGRESS_KEY}&format=json`;
   }
 
   const resp = await fetch(url);
