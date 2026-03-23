@@ -186,29 +186,26 @@ async function getMemberVoteOnBill(memberId, congress, billType, billNumber, cha
           console.log("Error fetching Senate vote XML:", e.message);
         }
       }
-      // House votes from Congress.gov API (beta)
-      else if (voteUrl.includes("clerk.house.gov") || voteUrl.includes("congress.gov")) {
+      // House votes from clerk.house.gov XML
+      else if (voteUrl.includes("clerk.house.gov")) {
         try {
-          // Try the Congress.gov house roll call vote endpoint
-          // Extract roll call number and session from the URL
-          const houseMatch = voteUrl.match(/roll(\d+)/i) || voteUrl.match(/vote_(\d+)/i);
-          if (houseMatch) {
-            const rollCall = houseMatch[1];
-            const session = new Date().getFullYear() % 2 === 1 ? 1 : 2;
-            const houseVoteUrl = `${CONGRESS_API}/house-roll-call-vote/${congress}/${session}/${rollCall}?api_key=${process.env.CONGRESS_KEY}&format=json`;
-            const houseResp = await fetch(houseVoteUrl);
-            if (houseResp.ok) {
-              const houseData = await houseResp.json();
-              const memberVotes = houseData.rollCallVote?.memberVotes || [];
-              for (const mv of memberVotes) {
-                if (mv.bioguideId === memberId) {
-                  return mv.votecast || mv.voteCast || "Has Not Voted On This Bill";
-                }
-              }
-            }
+          const xmlResp = await fetch(voteUrl);
+          const xmlText = await xmlResp.text();
+          // House XML uses name-id (which is the bioguide ID) and <vote>Aye/No/etc.</vote>
+          const memberPattern = new RegExp(
+            `name-id="${memberId}"[^>]*>.*?<vote>([^<]+)</vote>`,
+            "i"
+          );
+          const match = xmlText.match(memberPattern);
+          if (match) {
+            // Normalize House terminology: Aye→Yea, No→Nay
+            const vote = match[1];
+            if (vote === "Aye") return "Yea";
+            if (vote === "No") return "Nay";
+            return vote; // "Not Voting", "Present", etc.
           }
         } catch (e) {
-          console.log("Error fetching House vote:", e.message);
+          console.log("Error fetching House vote XML:", e.message);
         }
       }
     }
