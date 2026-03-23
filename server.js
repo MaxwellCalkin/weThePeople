@@ -3,15 +3,16 @@ const app = express();
 const mongoose = require("mongoose");
 const passport = require("passport");
 const session = require("express-session");
-const MongoStore = require("connect-mongo")(session);
+const MongoStore = require("connect-mongo");
 const methodOverride = require("method-override");
 const flash = require("express-flash");
 const logger = require("morgan");
 const connectDB = require("./config/database");
 const mainRoutes = require("./routes/main");
 const postRoutes = require("./routes/posts");
-const commentRoutes = require("./routes/comments")
-const voteRoutes = require("./routes/votes")
+const commentRoutes = require("./routes/comments");
+const voteRoutes = require("./routes/votes");
+const path = require("path");
 
 //Use .env file in config folder
 require("dotenv").config({ path: "./config/.env" });
@@ -24,9 +25,10 @@ connectDB();
 
 //Using EJS for views
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 //Static Folder
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 //Body Parsing
 app.use(express.urlencoded({ extended: true }));
@@ -41,10 +43,12 @@ app.use(methodOverride("_method"));
 // Setup Sessions - stored in MongoDB
 app.use(
   session({
-    secret: "keyboard cat",
+    secret: process.env.SESSION_SECRET || "keyboard cat",
     resave: false,
     saveUninitialized: false,
-    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    store: MongoStore.create({
+      mongoUrl: process.env.DB_STRING,
+    }),
   })
 );
 
@@ -58,10 +62,14 @@ app.use(flash());
 //Setup Routes For Which The Server Is Listening
 app.use("/", mainRoutes);
 app.use("/post", postRoutes);
-app.use("/comment", commentRoutes)
-app.use("/vote", voteRoutes)
+app.use("/comment", commentRoutes);
+app.use("/vote", voteRoutes);
 
-//Server Running
-app.listen(process.env.PORT, () => {
-  console.log("Server is running, you better catch it!");
-});
+//Server Running (only when not in serverless)
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
+  app.listen(process.env.PORT || 3000, () => {
+    console.log("Server is running, you better catch it!");
+  });
+}
+
+module.exports = app;

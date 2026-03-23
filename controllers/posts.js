@@ -97,8 +97,10 @@ module.exports = {
   },
   createPost: async (req, res) => {
     try {
-      // Upload image to cloudinary
-      const result = await cloudinary.uploader.upload(req.file.path);
+      // Upload image to cloudinary from memory buffer
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      const dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+      const result = await cloudinary.uploader.upload(dataURI);
 
       await Post.create({
         title: req.body.title,
