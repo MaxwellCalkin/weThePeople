@@ -160,7 +160,45 @@ async function getMemberVoteOnBill(memberId, congress, billType, billNumber, cha
       // No recorded roll call vote — check if it passed another way
       if (passedByUC) return "Passed by Unanimous Consent";
       if (passedByVoice) return "Passed by Voice Vote";
-      return "Has Not Voted On This Bill";
+
+      // Companion bill check: e.g. Senate bill S.2557 may have no Senate action,
+      // but H.R.4405 (same number) was passed by the Senate via UC.
+      const companionType = billType === "s" ? "hr" : billType === "hr" ? "s" : null;
+      if (companionType) {
+        try {
+          const companionUrl = `${CONGRESS_API}/bill/${congress}/${companionType}/${billNumber}/actions?api_key=${process.env.CONGRESS_KEY}&format=json&limit=50`;
+          const companionResp = await fetch(companionUrl);
+          if (companionResp.ok) {
+            const companionData = await companionResp.json();
+            const companionActions = companionData.actions || [];
+            for (const ca of companionActions) {
+              const caText = (ca.text || "").toLowerCase();
+              const targetChamber = chamber.toLowerCase();
+              const passedInTarget =
+                (targetChamber === "senate" && (caText.includes("passed/agreed to in senate") || (caText.includes("senate") && (caText.includes("passed") || caText.includes("agreed to"))))) ||
+                (targetChamber === "house" && (caText.includes("passed/agreed to in house") || (caText.includes("house") && (caText.includes("passed") || caText.includes("agreed to")))));
+              if (passedInTarget) {
+                if (caText.includes("unanimous consent") || caText.includes("without objection")) {
+                  return "Passed by Unanimous Consent";
+                }
+                if (caText.includes("voice vote")) {
+                  return "Passed by Voice Vote";
+                }
+                if (ca.recordedVotes && ca.recordedVotes.length > 0) {
+                  rollCallVotes.push(...ca.recordedVotes);
+                  break;
+                }
+              }
+            }
+          }
+        } catch (e) {
+          console.log("Error checking companion bill:", e.message);
+        }
+      }
+
+      if (rollCallVotes.length === 0) {
+        return "Has Not Voted On This Bill";
+      }
     }
 
     // Step 2: For each roll call vote, check the member's position
